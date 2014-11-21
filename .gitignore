@@ -1,0 +1,16 @@
+#########################
+# Twitterbot Patterns
+#########################
+
+# OSX
+.DS_Store
+
+# compiled Python
+*.pyc
+
+# keys files: these contain Twitter API keys, which are private
+keys.txt
+
+launcher.sh
+
+
