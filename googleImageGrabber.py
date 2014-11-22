@@ -1,6 +1,10 @@
 import urllib2
 import simplejson
-import cStringIO
+#import cStringIO
+from PIL import Image
+import requests
+from io import BytesIO
+
 
 fetcher = urllib2.build_opener()
 searchTerm = 'parrot'
@@ -11,7 +15,14 @@ a =  simplejson.load(f)
 
 imageUrl = a['responseData']['results'][0]['unescapedUrl']
 print imageUrl
+imageUrl = "http://pngimg.com/upload/parrot_PNG713.png"
 
-file = cStringIO.StringIO(urllib2.urlopen(imageUrl).read())
-img = Image.open(file)
-print img
+response = requests.get(imageUrl)
+img = Image.open(BytesIO(response.content))
+img.save('tweetImage.png')
+
+#imageFile = cStringIO.StringIO(urllib2.urlopen(imageUrl).read())
+#print imageFile
+
+#img = Image.open(file)
+#print img
