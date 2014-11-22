@@ -8,19 +8,24 @@ import urllib2
 import datetime
 import time
 
-# 1st, grab the right page
-wiki = "http://en.wikipedia.org/wiki/Deaths_in_2014"
+def Activate():
+	print "Activate called" 
 
-header = {'User-Agent': 'Mozilla/5.0'} #Needed to prevent 403 error on Wikipedia
-req = urllib2.Request(wiki,headers=header)
-page = urllib2.urlopen(req)
-soup = BeautifulSoup(page)
 
-# get raw text of page 
-rawText = soup.get_text()
 
-# limit the max num of tweets each day
-maxDailyTweets = 5
+	# 1st, grab the right page
+	wiki = "http://en.wikipedia.org/wiki/Deaths_in_2014"
+
+	header = {'User-Agent': 'Mozilla/5.0'} #Needed to prevent 403 error on Wikipedia
+	req = urllib2.Request(wiki,headers=header)
+	page = urllib2.urlopen(req)
+	soup = BeautifulSoup(page)
+
+	# get raw text of page 
+	rawText = soup.get_text()
+
+	# limit the max num of tweets each day
+	maxDailyTweets = 5
 
 # e.g. "April 2014"
 def get_monthyear():
@@ -97,71 +102,75 @@ def extractName(line):
 	return line[0:line.index(',')]
 
 
-# look for the month, in format such as "February 2014"
-matchString = get_monthyear()
+def doStuff():
+	# look for the month, in format such as "February 2014"
+	matchString = get_monthyear()
 
-# get the start line that contains the number
-startIndex = 0
-rawLines = rawText.split('\n')
-for line in rawLines:
-	if line == matchString:
-		break
-	startIndex = startIndex + 1
-
-#now look for the current date, i.e. 20 for March 20th, 2014
-matchDateString = get_daydate()	
-foundEntries = False
-
-print matchDateString 
-
-# find the index for this date, just the day part of the date, e.g. "20
-for i in range(startIndex, len(rawLines)-1):
-	if rawLines[i] == matchDateString:
-		startIndex = startIndex + 1
-		foundEntries = True
-		break
-		
-	startIndex = startIndex + 1
-
-wikiDeathList = []
-
-# skip past leading blank lines
-if foundEntries == True:
-	foundEntries = False
-	for i in range(startIndex, len(rawLines)-1):
-		if not rawLines[i]:
-			# we have all the entries need
-			if foundEntries == True:
-				break
-			else:
-				foundEntries = True
-		else:
-			# add to array
-			wikiDeathList.append(rawLines[i])
-			#print extractName(rawLines[i])
-			#print clean_obituary(rawLines[i])
-
-
-if len(wikiDeathList) == 0:
-	# no entries, clear file, we are done
-	clear_deathlist()
-
-# get today's list of the dead
-dList = read_deathlist()
-	# make sure we haven't exceeded max number of daily tweets
-if len(dList) < maxDailyTweets:
-	
-	for line in wikiDeathList:
-		encodeLine = line.encode('utf-8')
-		if not extractName(encodeLine) in dList:
-			
-			# not in our list already
-			tweet_death(clean_obituary(encodeLine))
-			write_deathlist(encodeLine)
-
-			# only tweet once/scrape in case of wiki-vandalism
+	# get the start line that contains the number
+	startIndex = 0
+	rawLines = rawText.split('\n')
+	for line in rawLines:
+		if line == matchString:
 			break
+		startIndex = startIndex + 1
+
+	#now look for the current date, i.e. 20 for March 20th, 2014
+	matchDateString = get_daydate()	
+	foundEntries = False
+
+	print matchDateString 
+
+	# find the index for this date, just the day part of the date, e.g. "20
+	for i in range(startIndex, len(rawLines)-1):
+		if rawLines[i] == matchDateString:
+			startIndex = startIndex + 1
+			foundEntries = True
+			break
+		
+		startIndex = startIndex + 1
+
+	wikiDeathList = []
+
+	# skip past leading blank lines
+	if foundEntries == True:
+		foundEntries = False
+		for i in range(startIndex, len(rawLines)-1):
+			if not rawLines[i]:
+				# we have all the entries need
+				if foundEntries == True:
+					break
+				else:
+					foundEntries = True
+			else:
+				# add to array
+				wikiDeathList.append(rawLines[i])
+				#print extractName(rawLines[i])
+				#print clean_obituary(rawLines[i])
+
+
+	if len(wikiDeathList) == 0:
+		# no entries, clear file, we are done
+		clear_deathlist()
+
+	# get today's list of the dead
+	dList = read_deathlist()
+		# make sure we haven't exceeded max number of daily tweets
+	if len(dList) < maxDailyTweets:
+	
+		for line in wikiDeathList:
+			encodeLine = line.encode('utf-8')
+			if not extractName(encodeLine) in dList:
+			
+				# not in our list already
+				tweet_death(clean_obituary(encodeLine))
+				write_deathlist(encodeLine)
+
+				# only tweet once/scrape in case of wiki-vandalism
+				break
 
 		
 
 
+if __name__ == "__main__":
+	Activate()
+		
