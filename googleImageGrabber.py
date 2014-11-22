@@ -12,6 +12,6 @@ a =  simplejson.load(f)
 imageUrl = a['responseData']['results'][0]['unescapedUrl']
 print imageUrl
 
-file = cStringIO.StringIO(urllib.urlopen(imageUrl).read())
+file = cStringIO.StringIO(urllib2.urlopen(imageUrl).read())
 img = Image.open(file)
 print img
