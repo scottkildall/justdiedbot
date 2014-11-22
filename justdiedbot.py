@@ -11,29 +11,39 @@ import time
 def Activate():
 	print "Activate called" 
 
+	# generate the appropriate URL that has all the wikipeda 
+	wikipediaURL =  generateURL()
+	print wikipediaURL
 
-
-	# 1st, grab the right page
-	wiki = "http://en.wikipedia.org/wiki/Deaths_in_2014"
-
-	header = {'User-Agent': 'Mozilla/5.0'} #Needed to prevent 403 error on Wikipedia
-	req = urllib2.Request(wiki,headers=header)
-	page = urllib2.urlopen(req)
-	soup = BeautifulSoup(page)
-
-	# get raw text of page 
-	rawText = soup.get_text()
+	print getRawURLText(wikipediaURL)
 
 	# limit the max num of tweets each day
 	maxDailyTweets = 5
+
+# URL is something like:
+# "http://en.wikipedia.org/wiki/Deaths_in_2014"
+def generateURL():
+        baseURL = "http://en.wikipedia.org/wiki/Deaths_in_"
+	return baseURL + get_year()
+
+def getRawURLText(wikipediaURL):
+	# all of this will get the raw text for the wikipedia deaths page
+        header = {'User-Agent': 'Mozilla/5.0'} #Needed to prevent 403 error on Wikipedia
+        req = urllib2.Request(wikipediaURL,headers=header)
+        page = urllib2.urlopen(req)
+        soup = BeautifulSoup(page)
+
+        # get raw text of page 
+        return soup.get_text()
+
+# the current year as a string, e.g. "2014"
+def get_year():
+        return datetime.datetime.today().strftime("%Y")
 
 # e.g. "April 2014"
 def get_monthyear():
 	todayStr = datetime.datetime.today() 
  	return todayStr.strftime("%B %Y")
-    #date = datetime.now().strftime('%b %d %y')
-    # In date string we store the date in format Month-Day-Year
-    #return date
 
 # e.g. if date is March 20th, 2010, this will return 20, strip leading zeros
 def get_daydate():
