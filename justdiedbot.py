@@ -9,16 +9,18 @@ import datetime
 import time
 
 def Activate():
+	# limit the max num of tweets each day
+	maxDailyTweets = 10
+
 	print "Activate called" 
 
 	# generate the appropriate URL that has all the wikipeda 
 	wikipediaURL =  generateURL()
 	print wikipediaURL
 
-	print getRawURLText(wikipediaURL)
-
-	# limit the max num of tweets each day
-	maxDailyTweets = 5
+	rawText = getRawURLText(wikipediaURL)
+	tweetTodaysDeaths(rawText, maxDailyTweets)
+	
 
 # URL is something like:
 # "http://en.wikipedia.org/wiki/Deaths_in_2014"
@@ -66,7 +68,7 @@ def get_lastdied():
 	return lastdied.rstrip('\n')
 
 def tweet_death(diedStr):
-	#tweet here
+	print "TWEETING: " + diedStr
 	tweetStr = "RIP " + diedStr
 	log_tweet(tweetStr)
 
@@ -112,7 +114,7 @@ def extractName(line):
 	return line[0:line.index(',')]
 
 
-def doStuff():
+def tweetTodaysDeaths(rawText, maxDailyTweets):
 	# look for the month, in format such as "February 2014"
 	matchString = get_monthyear()
 
