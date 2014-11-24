@@ -13,8 +13,9 @@ searchUrl = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + sea
 f = fetcher.open(searchUrl)
 a =  simplejson.load(f)
 
+print a
 imageUrl = a['responseData']['results'][0]['unescapedUrl']
-print imageUrl
+#print imageUrl
 imageUrl = "http://pngimg.com/upload/parrot_PNG713.png"
 
 response = requests.get(imageUrl)
