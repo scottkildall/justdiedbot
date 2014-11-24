@@ -8,6 +8,8 @@ import urllib2
 import datetime
 import time
 
+import tweeter as Tweeter
+
 def Activate():
 	# limit the max num of tweets each day
 	maxDailyTweets = 10
@@ -70,6 +72,7 @@ def get_lastdied():
 def tweet_death(diedStr):
 	print "TWEETING: " + diedStr
 	tweetStr = "RIP " + diedStr
+	Tweeter.tweetMessage(Tweeter.getKeys("keys.txt"), tweetStr)
 	log_tweet(tweetStr)
 
 # writes all the dead people to a list, this is just for one day
@@ -184,5 +187,6 @@ def tweetTodaysDeaths(rawText, maxDailyTweets):
 
 
 if __name__ == "__main__":
-	Activate()
+	Tweeter.tweetMessage(Tweeter.getKeys("keys.txt"), "Viktor Tikhonov, 84, Soviet ice hockey coach.")
+	#Activate()
 		
