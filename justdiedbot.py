@@ -82,6 +82,13 @@ def write_deathlist(lastDiedStr):
 	f.write("\n")
 	f.close()
 
+# like above except we just write a number, is always the first line, so no append
+def write_deathlist_date(dateStr):
+        f = open("deathlist.txt", "w")
+        f.write(dateStr)
+        f.write("\n")
+        f.close()
+
 # writes all the dead people to a list, this is just for one day
 def read_deathlist():
 	f = open("deathlist.txt", "r")
@@ -169,8 +176,15 @@ def tweetTodaysDeaths(rawText, maxDailyTweets):
 
 	# get today's list of the dead
 	dList = read_deathlist()
-		# make sure we haven't exceeded max number of daily tweets
-	if len(dList) < maxDailyTweets:
+	
+	# make sure we haven't exceeded max number of daily tweets
+	if len(dList) > 0 and dList[0] != matchDateString:
+		print "new day"
+		write_deathlist_date(matchDateString)
+		dList = read_deathlist()
+
+	# first line is day number
+	if len(dList) < maxDailyTweets + 1:
 	
 		for line in wikiDeathList:
 			encodeLine = line.encode('utf-8')
@@ -187,6 +201,6 @@ def tweetTodaysDeaths(rawText, maxDailyTweets):
 
 
 if __name__ == "__main__":
-	Tweeter.tweetMessage(Tweeter.getKeys("keys.txt"), "Viktor Tikhonov, 84, Soviet ice hockey coach.")
-	#Activate()
+#	Tweeter.tweetMessage(Tweeter.getKeys("keys.txt"), "Viktor Tikhonov, 84, Soviet ice hockey coach.")
+	Activate()
 		
