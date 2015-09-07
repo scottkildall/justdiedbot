@@ -18,7 +18,7 @@ def Activate():
 
 	# generate the appropriate URL that has all the wikipeda 
 	wikipediaURL =  generateURL()
-	print wikipediaURL
+#	print wikipediaURL
 
 	rawText = getRawURLText(wikipediaURL)
 	tweetTodaysDeaths(rawText, maxDailyTweets)
@@ -48,6 +48,12 @@ def get_year():
 def get_monthyear():
 	todayStr = datetime.datetime.today() 
  	return todayStr.strftime("%B %Y")
+
+# e.g. "April"
+def get_month():
+        todayStr = datetime.datetime.today()
+        return todayStr.strftime("%B")
+
 
 # e.g. if date is March 20th, 2010, this will return 20, strip leading zeros
 def get_daydate():
@@ -126,8 +132,14 @@ def extractName(line):
 
 def tweetTodaysDeaths(rawText, maxDailyTweets):
 	# look for the month, in format such as "February 2014"
-	matchString = get_monthyear()
-
+	
+	# old
+	#matchString = get_monthyear()
+	
+	# in 2015, Wikipedia changed the format of the page so that deaths are by month
+	matchString = get_month()
+	#print matchString
+	
 	# get the start line that contains the number
 	startIndex = 0
 	rawLines = rawText.split('\n')
@@ -140,13 +152,19 @@ def tweetTodaysDeaths(rawText, maxDailyTweets):
 	matchDateString = get_daydate()	
 	foundEntries = False
 
-	print matchDateString 
+	#print "Match date string (should be a number corrsponding the the date of the month): " + matchDateString 
+	#print "--------------"
+
+	# the raw URL
+	# print rawLines
+	
 
 	# find the index for this date, just the day part of the date, e.g. "20
 	for i in range(startIndex, len(rawLines)-1):
 		if rawLines[i] == matchDateString:
 			startIndex = startIndex + 1
 			foundEntries = True
+			print "Found entries = True"
 			break
 		
 		startIndex = startIndex + 1
@@ -191,8 +209,9 @@ def tweetTodaysDeaths(rawText, maxDailyTweets):
 			if not extractName(encodeLine) in dList:
 			
 				# not in our list already
-				tweet_death(clean_obituary(encodeLine))
 				write_deathlist(encodeLine)
+				tweet_death(clean_obituary(encodeLine))
+				#write_deathlist(encodeLine)
 
 				# only tweet once/scrape in case of wiki-vandalism
 				break
